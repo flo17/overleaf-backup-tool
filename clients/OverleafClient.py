@@ -22,6 +22,7 @@ class OverleafClient(object):
 
         self._url_signin = "https://www.overleaf.com/login"
         self._dashboard_url = "https://www.overleaf.com/dash/"
+        self._project_url = "https://www.overleaf.com/project"
 
         self._login_cookies = None
         self._login_request_get = None
@@ -72,33 +73,17 @@ class OverleafClient(object):
         # load the projects via the json api
         projects_list = []
 
-        page = 1
-        while (True):
-            params = {"is": status,
-                      "per": 50,
-                      }
+        proj_json_req = reqs.get(self._project_url,
+                                 headers=headers,
+                                 cookies=login_cookies)
 
-            if page > 1:
-                params["page"] = page
+        proj_json_doc = proj_json_req.text
+        soup = BeautifulSoup(proj_json_doc, 'html.parser')
+        proj_json_data = soup.find("script", attrs={"id": "data", "type": "application/json"}).contents[0]
 
-            proj_json_req = reqs.get("https://www.overleaf.com/api/v0/current_user/docs/",
-                                     params,
-                                     headers=headers,
-                                     cookies=login_cookies)
-
-            # parse json
-            proj_json = json.loads(proj_json_req.text)
-            projects_list.extend(proj_json["docs"])
-
-            # check if this is the last page
-            res_curr_page = proj_json["paging"]["current_page"]
-            res_total_pages = proj_json["paging"]["total_pages"]
-            if res_curr_page == res_total_pages:
-                break
-
-            page += 1
-
-            random_sleep()
+        # parse json
+        proj_json = json.loads(proj_json_data)
+        projects_list.extend(proj_json["projects"])
 
         return projects_list
 
