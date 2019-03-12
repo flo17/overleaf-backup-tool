@@ -75,8 +75,12 @@ if __name__ == "__main__":
 
         # check if needs backup
         backup = True
-        if proj["id"] in projects_old_id_to_info\
-                and (projects_old_id_to_info[proj["id"]]["updated_at"] >= proj["updated_at"])\
+        if proj["isV1Project"] == True:
+            logging.info("{0}/{1} Project {2} is V1 Project! Skip..."
+                         .format(i + 1, len(projects_info_list), proj_id, proj_backup_path))
+            continue
+        elif proj["id"] in projects_old_id_to_info\
+                and (projects_old_id_to_info[proj["id"]]["lastUpdated"] >= proj["lastUpdated"])\
                 and ("backup_up_to_date" in projects_old_id_to_info[proj["id"]] and projects_old_id_to_info[proj["id"]]["backup_up_to_date"]):
             proj["backup_up_to_date"] = True
             backup = False
