@@ -47,7 +47,7 @@ if __name__ == "__main__":
     overleaf_client = OverleafClient()
     overleaf_client.login_with_user_and_pass(username, password)
 
-    projects_info_list = overleaf_client.get_projects(status="all")
+    projects_info_list = overleaf_client.get_projects(status="active")
 
     logging.info("Total projects:%s" % len(projects_info_list))
 
