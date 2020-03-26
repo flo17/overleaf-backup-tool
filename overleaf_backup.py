@@ -69,9 +69,10 @@ if __name__ == "__main__":
     for i, proj in enumerate(projects_info_list):
         proj["url_git"] = "https://git.overleaf.com/%s" % proj["id"]
         proj_id = proj["id"]
+        proj_name = proj["name"]
         proj_git_url = proj["url_git"]
 
-        proj_backup_path = os.path.join(backup_git_dir, proj_id)
+        proj_backup_path = os.path.join(backup_git_dir, proj_name)
 
         # check if needs backup
         backup = True
